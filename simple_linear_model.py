@@ -20,16 +20,16 @@ def loss_mse(X, Y, model):
     return tf.reduce_mean(diff**2)
 
 
-# for automatic differentiation during training
-def compute_gradient(X, Y, model):
-    with tf.GradientTape() as tape:
-        loss = loss_mse(X, Y, model)
-
-    return tape.gradient(loss, [model.weight, model.bias])
-
-
 # training part
 def train_step(X, Y, model, optimizer):
+
+    # for automatic differentiation during training
+    def compute_gradient(X, Y, model):
+        with tf.GradientTape() as tape:
+            loss = loss_mse(X, Y, model)
+
+        return tape.gradient(loss, [model.weight, model.bias])
+
     gradients = compute_gradient(X, Y, model)
     optimizer.apply_gradients(zip(gradients, [model.weight, model.bias]))
 
